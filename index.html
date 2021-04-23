@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="Mobile.js"></script>
+</head>
+<style>
+    .mobile {
+        border: 1px solid black;
+        width: 300px;
+        text-align: center;
+        float: left;
+    }
+
+    #iphone {
+        background-color: antiquewhite;
+    }
+
+    #nokia {
+        background-color: #5a6268;
+    }
+</style>
+<body>
+<div class="mobile" id="iphone">
+    <p id="iphone-name">Name</p>
+    <p id="iphone-battery">Name</p>
+    <textarea id="iphone-inbox" cols="30" rows="10" placeholder="Inbox"></textarea>
+    <textarea id="iphone-outbox" cols="30" rows="10" placeholder="Outbox"></textarea>
+    <input type="text" id="iphone-msg" oninput="mobile1.writeMsg(this.value)">
+    <button onclick="sendMess(mobile1,mobile2)" id="iphone-send">Send</button>
+    <button onclick="chargeBat(mobile1)">Sạc</button>
+    <button onclick="turnOff(mobile1)" id="iphone-turnoff">Off</button>
+    <button onclick="turnOn(mobile1)" id="iphone-turnon" disabled>On</button>
+    <button onclick="calling(mobile1,mobile2)" id="iphone-call">Call</button>
+</div>
+<div class="mobile" id="nokia" style="display: block">
+    <p id="nokia-name">Name</p>
+    <p id="nokia-battery">Name</p>
+    <textarea id="nokia-inbox" cols="30" rows="10" placeholder="Inbox"></textarea>
+    <textarea id="nokia-outbox" cols="30" rows="10" placeholder="Outbox"></textarea>
+    <input type="text" id="nokia-msg" oninput="mobile2.writeMsg(this.value)">
+    <button onclick="sendMess(mobile2,mobile1)" id="nokia-send">Send</button>
+    <button onclick="chargeBat(mobile2)">Sạc</button>
+    <button onclick="turnOff(mobile2)" id="nokia-turnoff">Off</button>
+    <button onclick="turnOn(mobile2)" disabled id="nokia-turnon">On</button>
+    <button onclick="calling(mobile2,mobile1)" id="nokia-call">Call</button>
+</div>
+<script>
+    let mobile1 = new Mobile('Iphone 12', 'iphone');
+    let mobile2 = new Mobile('Nokia 1280', 'nokia');
+
+    //làm các hàm để tương tác đối tượng và html
+    function display(mobile) {
+        document.getElementById(mobile.type + "-name").innerHTML = mobile.name;
+        document.getElementById(mobile.type + "-battery").innerHTML = mobile.battery;
+        document.getElementById(mobile.type + "-inbox").innerHTML = mobile.inbox;
+        document.getElementById(mobile.type + "-outbox").innerHTML = mobile.outbox;
+    }
+
+    function displayOff(mobile) {
+        document.getElementById(mobile.type + "-inbox").disabled = true;
+        document.getElementById(mobile.type + "-outbox").disabled = true;
+        document.getElementById(mobile.type + "-turnoff").disabled = true;
+        document.getElementById(mobile.type + "-turnon").disabled = false;
+        document.getElementById(mobile.type + "-msg").disabled = true;
+        document.getElementById(mobile.type + "-send").disabled = true;
+
+    }
+
+    function displayOn(mobile) {
+        document.getElementById(mobile.type + "-inbox").disabled = false;
+        document.getElementById(mobile.type + "-outbox").disabled = false;
+        document.getElementById(mobile.type + "-turnoff").disabled = false;
+        document.getElementById(mobile.type + "-turnon").disabled = true;
+        document.getElementById(mobile.type + "-msg").disabled = false;
+        document.getElementById(mobile.type + "-send").disabled = false;
+    }
+
+    function displayAll() {
+        display(mobile1);
+        display(mobile2);
+    }
+
+    displayAll();
+
+    function sendMess(mobile1, mobile2) {
+        mobile1.sendMsg(mobile2);
+        mobile1.decreaseBattery();
+        displayAll();
+        clearInput(mobile1);
+    }
+
+    function clearInput(mobile) {
+        document.getElementById(mobile.type + "-msg").value = '';
+    }
+
+    function chargeBat(mobibe) {
+        while (mobibe.battery < 100) {
+            mobibe.battery += 10
+        }
+        displayAll()
+    }
+
+    function turnOn(mobile) {
+        displayOn(mobile)
+    }
+    function turnOff(mobile) {
+        displayOff(mobile);
+
+    }
+    function dongY(mobile1,mobile2) {
+        document.getElementById(mobile1.type+"-name").innerHTML= "Đang kết nối với " + mobile2.name + "<input type='button' value='Cancle' onclick='displayAll()'>"
+        document.getElementById(mobile2.type+"-name").innerHTML= "Đang kết nối " + mobile1.name + "<input type='button' value='Cancle' onclick='displayAll()'>"
+
+    }
+    function calling(mobile1, mobile2) {
+        document.getElementById(mobile2.type + "-name").innerHTML = mobile1.name + " calling to you!" + "<input type='button' value='Accept' onclick='dongY(mobile1,mobile2)'>" + "<input type='button' value='Deny' onclick='displayAll()'>"
+    }
+
+</script>
+</body>
+</html>
